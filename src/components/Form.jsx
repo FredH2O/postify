@@ -2,6 +2,13 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
+const imagesOption = [
+  "/images/image-1.png",
+  "/images/image-2.png",
+  "/images/image-3.png",
+  "/images/image-4.png",
+];
+
 const addPost = async (newPost) => {
   const { data } = await axios.post(
     "https://jsonplaceholder.typicode.com/posts",
@@ -15,6 +22,7 @@ const Form = () => {
     name: "",
     title: "",
     content: "",
+    image: "",
   });
   const queryClient = useQueryClient();
 
@@ -23,7 +31,7 @@ const Form = () => {
     onSuccess: (newPost) => {
       queryClient.setQueryData(["posts"], (oldPosts) => {
         const newId = Math.max(...oldPosts.map((p) => p.id), 0) + 1;
-        return [{ ...newPost, id: newId }, ...oldPosts];
+        return [{ ...newPost, id: newId, image: newPost.image }, ...oldPosts];
       });
       setUser({ name: "", title: "", content: "" });
     },
@@ -36,10 +44,19 @@ const Form = () => {
     });
   };
 
+  const handleImageSelect = (event) => {
+    setUser({ ...user, image: event.target.value });
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log(user);
-    mutation.mutate({ title: user.title, body: user.content, name: user.name });
+    mutation.mutate({
+      title: user.title,
+      body: user.content,
+      image: user.image,
+      name: user.name,
+    });
   };
 
   return (
@@ -77,6 +94,21 @@ const Form = () => {
           placeholder="Name"
           className="border p-1 rounded bg-slate-500"
         />
+
+        <select
+          name=""
+          id=""
+          value={user.image}
+          onChange={handleImageSelect}
+          className="border p-1 rounded bg-slate-500"
+        >
+          <option value="">Select an Image</option>
+          {imagesOption.map((img, index) => (
+            <option value={img} key={index}>
+              Image {index + 1}
+            </option>
+          ))}
+        </select>
 
         <textarea
           required

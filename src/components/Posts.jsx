@@ -25,6 +25,13 @@ const Posts = () => {
           <h2 className="text-slate-200 text-xl font-semibold">
             {post.title.charAt(0).toUpperCase() + post.title.slice(1)}
           </h2>
+          {post.image && (
+            <img
+              src={post.image}
+              alt="Post"
+              className="w-full h-40 object-cover rounded"
+            />
+          )}
           <p className="text-slate-500 text-sm">Anonymous User #{post.id}</p>
           <p className="text-slate-300">
             {post.body.charAt(0).toUpperCase() + post.body.slice(1)}
