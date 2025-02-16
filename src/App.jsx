@@ -7,8 +7,8 @@ function App() {
   return (
     <>
       <Header />
-      <main className="bg-slate-700 h-screen">
-        <div className="container m-auto pt-3">
+      <main className="bg-slate-700 h-auto">
+        <div className="container m-auto py-5">
           <Form />
           <Posts />
         </div>

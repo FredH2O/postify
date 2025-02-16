@@ -95,20 +95,34 @@ const Form = () => {
           className="border p-1 rounded bg-slate-500"
         />
 
-        <select
-          name=""
-          id=""
-          value={user.image}
-          onChange={handleImageSelect}
-          className="border p-1 rounded bg-slate-500"
-        >
-          <option value="">Select an Image</option>
+        <div className="flex flex-wrap justify-center gap-2">
           {imagesOption.map((img, index) => (
-            <option value={img} key={index}>
-              Image {index + 1}
-            </option>
+            <label key={index} className="cursor-pointer">
+              <input
+                type="radio"
+                name="image"
+                value={img}
+                checked={user.image === img}
+                className="hidden"
+                onChange={handleImageSelect}
+                aria-label={`Select Image ${index + 1}`}
+              />
+              <div
+                className={`border-2 rounded-lg p-1 transition ${
+                  user.image === img
+                    ? "border-blue-500 shadow-md scale-105"
+                    : "border-gray-300"
+                } hover:border-blue-400 hover:shadow-sm`}
+              >
+                <img
+                  src={img}
+                  alt={`Image ${index + 1}`}
+                  className="w-20 h-20 object-cover rounded"
+                />
+              </div>
+            </label>
           ))}
-        </select>
+        </div>
 
         <textarea
           required
