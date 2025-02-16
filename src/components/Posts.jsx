@@ -32,7 +32,9 @@ const Posts = () => {
               className="w-full h-40 object-cover rounded"
             />
           )}
-          <p className="text-slate-500 text-sm">Anonymous User #{post.id}</p>
+          <p className="text-slate-500 text-sm">
+            {post.name ? post.name : `Anonymous User #${post.id}`}
+          </p>
           <p className="text-slate-300">
             {post.body.charAt(0).toUpperCase() + post.body.slice(1)}
           </p>
