@@ -25,7 +25,7 @@ Ensure you have the following installed:
 1. **Clone the repository**
 
    ```sh
-   git clone https://github.com/your-username/postify.git
+   git clone https://github.com/FredH2O/postify.git
    cd postify
    ```
 
