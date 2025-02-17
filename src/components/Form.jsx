@@ -3,10 +3,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 const imagesOption = [
-  "/images/image-1.png",
-  "/images/image-2.png",
-  "/images/image-3.png",
-  "/images/image-4.png",
+  "/postify/images/image-1.png",
+  "/postify/images/image-2.png",
+  "/postify/images/image-3.png",
+  "/postify/images/image-4.png",
 ];
 
 const addPost = async (newPost) => {
@@ -28,13 +28,16 @@ const Form = () => {
 
   const mutation = useMutation({
     mutationFn: addPost,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
+    onSuccess: (data) => {
+      console.log("Mutation success! Data received:", data); // Check if this logs
+      queryClient.setQueryData(["posts"], (oldPosts) => [
+        data,
+        ...(oldPosts || []),
+      ]);
       setUser({ name: "", title: "", content: "", image: "" });
     },
     onError: (error) => {
-      alert("Failed to post! Try again later");
-      console.log("Error:", error.response?.data || error.message);
+      console.error("Mutation failed:", error);
     },
   });
 
