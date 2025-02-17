@@ -28,13 +28,9 @@ const Form = () => {
 
   const mutation = useMutation({
     mutationFn: addPost,
-    onSuccess: (newPost) => {
-      queryClient.setQueryData(["posts"], (oldPosts = []) => {
-        const newId =
-          oldPosts.length > 0 ? Math.max(...oldPosts.map((p) => p.id)) + 1 : 1;
-        return [{ ...newPost, id: newId, image: user.image }, ...oldPosts];
-      });
-      setUser({ name: "", title: "", content: "" });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      setUser({ name: "", title: "", content: "", image: "" });
     },
     onError: (error) => {
       alert("Failed to post! Try again later");
