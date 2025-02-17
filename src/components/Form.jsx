@@ -29,11 +29,16 @@ const Form = () => {
   const mutation = useMutation({
     mutationFn: addPost,
     onSuccess: (newPost) => {
-      queryClient.setQueryData(["posts"], (oldPosts) => {
-        const newId = Math.max(...oldPosts.map((p) => p.id), 0) + 1;
-        return [{ ...newPost, id: newId, image: newPost.image }, ...oldPosts];
+      queryClient.setQueryData(["posts"], (oldPosts = []) => {
+        const newId =
+          oldPosts.length > 0 ? Math.max(...oldPosts.map((p) => p.id)) + 1 : 1;
+        return [{ ...newPost, id: newId, image: user.image }, ...oldPosts];
       });
       setUser({ name: "", title: "", content: "" });
+    },
+    onError: (error) => {
+      alert("Failed to post! Try again later");
+      console.log("Error:", error.response?.data || error.message);
     },
   });
 
@@ -50,7 +55,14 @@ const Form = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    if (!user.image) {
+      alert("Please select an image!");
+      return;
+    }
+
     console.log(user);
+
     mutation.mutate({
       title: user.title,
       body: user.content,
@@ -62,9 +74,8 @@ const Form = () => {
   return (
     <div className="flex justify-center items-center p-3">
       <form
-        action=""
         onSubmit={handleSubmit}
-        className="border p-1 flex flex-col text-center bg-slate-800 text-white space-y-2"
+        className="border rounded px-6 py-3 flex flex-col text-center border-slate-600 bg-slate-800 text-white gap-6"
       >
         <label
           className="max-w-xl p-5 font-semibold text-lg"
@@ -91,10 +102,11 @@ const Form = () => {
           id="name"
           value={user.name}
           onChange={handleChange}
-          placeholder="Name"
+          placeholder="Username"
           className="border p-1 rounded bg-slate-500"
         />
 
+        <label className="text-left font-semibold">Select an image:</label>
         <div className="flex flex-wrap justify-center gap-2">
           {imagesOption.map((img, index) => (
             <label key={index} className="cursor-pointer">
@@ -108,7 +120,7 @@ const Form = () => {
                 aria-label={`Select Image ${index + 1}`}
               />
               <div
-                className={`border-2 rounded-lg p-1 transition ${
+                className={`border rounded-lg p-1 transition ${
                   user.image === img
                     ? "border-blue-500 shadow-md scale-105"
                     : "border-gray-300"
@@ -132,13 +144,14 @@ const Form = () => {
           value={user.content}
           onChange={handleChange}
           maxLength={130}
-          className="border p-1 bg-slate-500 rounded resize-none"
-          placeholder="What's on your mind?"
+          className="border p-3 bg-slate-500 rounded resize-none"
+          placeholder="What would you like to share?"
         ></textarea>
 
         <button
           type="submit"
-          className="cursor-pointer border bg-blue-700 rounded w-20 place-self-center"
+          disabled={mutation.isPending}
+          className="cursor-pointer border bg-green-400 text-slate-800 border-slate-500 rounded w-20 place-self-center"
         >
           {mutation.isPending ? "Posting..." : "Post"}
         </button>
